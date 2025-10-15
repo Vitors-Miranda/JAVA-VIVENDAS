@@ -6,8 +6,8 @@ public class SensorPresencia extends Sensor {
 
     }
 
-    public SensorPresencia(int id, String nombre, String fabricante, String modelo, float bateriaRestante, boolean _estaActivo, int _distanciaDeteccion) {
-        super(bateriaRestante, modelo, fabricante, nombre, id);
+    public SensorPresencia(String nombre, String fabricante, String modelo, float bateriaRestante, boolean _estaActivo, int _distanciaDeteccion) {
+        super(bateriaRestante, modelo, fabricante, nombre);
         this._estaActivo = _estaActivo;
         this._distanciaDeteccion = _distanciaDeteccion;
     }
@@ -30,7 +30,8 @@ public class SensorPresencia extends Sensor {
 
     @Override
     public String toString() {
-        return  "Está activo: '" + _estaActivo + '\'' +"\n" +
+        return  "\n" + super.toString() +
+                "Está activo: '" + _estaActivo + '\'' +"\n" +
                 "Distancia de Detección:'" + _distanciaDeteccion + '\'';
     }
 }

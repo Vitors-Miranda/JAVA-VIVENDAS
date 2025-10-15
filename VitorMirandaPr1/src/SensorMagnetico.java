@@ -4,8 +4,8 @@ public class SensorMagnetico extends Sensor{
     public SensorMagnetico() {
     }
 
-    public SensorMagnetico(float _bateriaRestante, String _modelo, String _fabricante, String _nombre, int _id, boolean _estaActivo) {
-        super(_bateriaRestante, _modelo, _fabricante, _nombre, _id);
+    public SensorMagnetico(float _bateriaRestante, String _modelo, String _fabricante, String _nombre, boolean _estaActivo) {
+        super(_bateriaRestante, _modelo, _fabricante, _nombre);
         this._estaActivo = _estaActivo;
     }
 
@@ -19,7 +19,7 @@ public class SensorMagnetico extends Sensor{
 
     @Override
     public String toString() {
-        return  "Está Activo: '" + _estaActivo + '\'';
+        return "\n" + super.toString() + "\nEstá Activo: '" + _estaActivo + '\'';
     }
 
 }

@@ -1,4 +1,5 @@
 public class Sensor {
+    private static int lastID = 0;
     private int _id;
     private String _nombre;
     private String _fabricante;
@@ -8,12 +9,13 @@ public class Sensor {
     public Sensor() {
 
     }
-    public Sensor(float _bateriaRestante, String _modelo, String _fabricante, String _nombre, int _id) {
+    public Sensor(float _bateriaRestante, String _modelo, String _fabricante, String _nombre) {
+        lastID++;
         this._bateriaRestante = _bateriaRestante;
         this._modelo = _modelo;
         this._fabricante = _fabricante;
         this._nombre = _nombre;
-        this._id = _id;
+        this._id = lastID;
     }
     public int get_id() {
         return _id;
@@ -57,7 +59,7 @@ public class Sensor {
 
     @Override
     public String toString() {
-        return  "id:" + _id + "\n" +
+        return  "\n" + "id:" + _id + "\n" +
                 "nombre:'" + _nombre + '\'' + "\n" +
                 "fabricante:'" + _fabricante + '\'' + "\n" +
                 "modelo:'" + _modelo + '\'' + "\n" +

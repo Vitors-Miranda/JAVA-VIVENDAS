@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 
 public class Habitacion {
+    private static int lastID = 0;
     private int _id;
     private String nombreEstancia;
-    ArrayList<Sensor> _sensores;
+    ArrayList<Sensor> _sensores =  new ArrayList<>();
 
     public Habitacion(){}
-    public Habitacion(int id, ArrayList<Sensor> _sensores, String nombreEstancia) {
-        this._id = id;
-        this._sensores = _sensores;
+    public Habitacion( String nombreEstancia) {
+        lastID++;
+        this._id = lastID;
         this.nombreEstancia = nombreEstancia;
     }
 
@@ -63,7 +64,7 @@ public class Habitacion {
 
     @Override
     public String toString() {
-        return  "Id: '" + _id + '\'' + "\n" +
+        return  "\n" + "Id: '" + _id + '\'' + "\n" +
                 "Nombre de Estancia: '" + nombreEstancia + '\'';
     }
 }

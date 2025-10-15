@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 
 public class Vivenda {
+    private static int lastID = 0;
     private int _id;
     private String _nombre;
     private int _num_habitantes;
-    private ArrayList<Habitacion> _habitaciones;
+    private ArrayList<Habitacion> _habitaciones = new ArrayList<Habitacion>();
     public Vivenda(){}
-    public Vivenda(int _id, ArrayList<Habitacion> _habitaciones, String nombre, int num_habitantes) {
-        this._id = _id;
-        this._habitaciones = _habitaciones;
+    public Vivenda( String nombre, int num_habitantes) {
+        lastID++;
+        this._id = lastID;
         this._nombre = nombre;
         this._num_habitantes = num_habitantes;
     }
@@ -47,16 +48,17 @@ public class Vivenda {
     }
 
     public boolean anadirHabitacion(Habitacion habitacion){
-        return true;
+        return _habitaciones.add(habitacion);
     }
 
     public boolean eliminarHabitacion(int _id){
-        return true;
+        return _habitaciones.removeIf(h -> h.getId() == _id);
+
     }
 
     @Override
     public String toString() {
-        return  "Id:" + _id + "\n" +
+        return  "\n" + "Id:" + _id + "\n" +
                 "Nombre:'" + _nombre + '\'' + "\n" +
                 "Numero de Habitantes:'" + _num_habitantes + '\'';
     }

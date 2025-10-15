@@ -1,4 +1,4 @@
-public class SensorTemperatura {
+public class SensorTemperatura extends Sensor {
     private Float _temperatura;
     private Float _temperaturaMaximaFabricante;
     private Float _temperaturaMinimaFabricante;
@@ -6,12 +6,11 @@ public class SensorTemperatura {
     private Float _temperaturaMinimaHistorico;
 
     public SensorTemperatura(){}
-    public SensorTemperatura(Float _temperatura, Float _temperaturaMaximaFabricante, Float _temperaturaMinimaFabricante, Float _temperaturaMaximaHistorico, Float _temperaturaMinimaHistorico) {
+    public SensorTemperatura(String modelo, String fabricante, String nombre, float bateriaRestante, Float _temperatura, Float _temperaturaMaximaFabricante, Float _temperaturaMinimaFabricante) {
+        super(bateriaRestante, modelo, fabricante, nombre);
         this._temperatura = _temperatura;
         this._temperaturaMaximaFabricante = _temperaturaMaximaFabricante;
         this._temperaturaMinimaFabricante = _temperaturaMinimaFabricante;
-        this._temperaturaMaximaHistorico = _temperaturaMaximaHistorico;
-        this._temperaturaMinimaHistorico = _temperaturaMinimaHistorico;
     }
 
     public Float get_temperaturaMinimaHistorico() {
@@ -56,7 +55,8 @@ public class SensorTemperatura {
 
     @Override
     public String toString() {
-        return  "Temperatura: '" + _temperatura + '\''  +"\n" +
+        return  "\n" + super.toString() +
+                "Temperatura: '" + _temperatura + '\''  +"\n" +
                 "Temperatura Maxima del Fabricante:'" + _temperaturaMaximaFabricante + '\'' + "\n" +
                 "Temperatura Minima del Fabricante:'" + _temperaturaMinimaFabricante + '\'' + "\n" +
                 "Temperatura Maxima Historico:'" + _temperaturaMaximaHistorico + '\'' + "\n" +
