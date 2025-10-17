@@ -1,14 +1,17 @@
+import Sensores.Sensor;
+
 import java.util.ArrayList;
 
 public class Habitacion {
+    private static int lastID = 0;
     private int _id;
     private String nombreEstancia;
-    ArrayList<Sensor> _sensores;
+    ArrayList<Sensor> _sensores =  new ArrayList<>();
 
     public Habitacion(){}
-    public Habitacion(int id, ArrayList<Sensor> _sensores, String nombreEstancia) {
-        this._id = id;
-        this._sensores = _sensores;
+    public Habitacion( String nombreEstancia) {
+        lastID++;
+        this._id = lastID;
         this.nombreEstancia = nombreEstancia;
     }
 
@@ -36,34 +39,19 @@ public class Habitacion {
         this.nombreEstancia = nombreEstancia;
     }
 
-    public boolean altaSensorPresencia(SensorPresencia _sensor){
-        return true;
-    }
-    public boolean altaSensorTemperatura(SensorTemperatura  _sensor){
-        return true;
-    }
-    public boolean altaSensorMagnetico(SensorMagnetico  _sensor){
-        return true;
-    }
     public boolean altaSensor(Sensor _sensor){
+        if (_sensores.contains(_sensor)) return false; //ya hay un sensor con los atributos fornecidos
+        _sensores.add(_sensor);
         return true;
     }
-    public boolean bajaSensorPresencia(SensorPresencia _sensor){
-        return true;
-    }
-    public boolean bajaSensorTemperatura(SensorTemperatura  _sensor){
-        return true;
-    }
-    public boolean bajaSensorMagnetico(SensorMagnetico  _sensor){
-        return true;
-    }
-    public boolean bajaSensor(Sensor _sensor){
-        return true;
+
+    public boolean bajaSensor(int _idSensor){
+        return _sensores.removeIf(s -> s.get_id() == _idSensor); //retorna trull se hay un sensor con el id fornecido
     }
 
     @Override
     public String toString() {
-        return  "Id: '" + _id + '\'' + "\n" +
+        return  "\n" + "Id: '" + _id + '\'' + "\n" +
                 "Nombre de Estancia: '" + nombreEstancia + '\'';
     }
 }
