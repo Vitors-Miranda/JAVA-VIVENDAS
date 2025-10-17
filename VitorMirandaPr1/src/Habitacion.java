@@ -1,3 +1,5 @@
+import Sensores.Sensor;
+
 import java.util.ArrayList;
 
 public class Habitacion {
@@ -37,29 +39,14 @@ public class Habitacion {
         this.nombreEstancia = nombreEstancia;
     }
 
-    public boolean altaSensorPresencia(SensorPresencia _sensor){
-        return true;
-    }
-    public boolean altaSensorTemperatura(SensorTemperatura  _sensor){
-        return true;
-    }
-    public boolean altaSensorMagnetico(SensorMagnetico  _sensor){
-        return true;
-    }
     public boolean altaSensor(Sensor _sensor){
+        if (_sensores.contains(_sensor)) return false; //ya hay un sensor con los atributos fornecidos
+        _sensores.add(_sensor);
         return true;
     }
-    public boolean bajaSensorPresencia(SensorPresencia _sensor){
-        return true;
-    }
-    public boolean bajaSensorTemperatura(SensorTemperatura  _sensor){
-        return true;
-    }
-    public boolean bajaSensorMagnetico(SensorMagnetico  _sensor){
-        return true;
-    }
-    public boolean bajaSensor(Sensor _sensor){
-        return true;
+
+    public boolean bajaSensor(int _idSensor){
+        return _sensores.removeIf(s -> s.get_id() == _idSensor); //retorna trull se hay un sensor con el id fornecido
     }
 
     @Override

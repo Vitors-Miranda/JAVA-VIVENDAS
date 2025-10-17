@@ -52,7 +52,7 @@ public class Vivenda {
     }
 
     public boolean eliminarHabitacion(int _id){
-        return _habitaciones.removeIf(h -> h.getId() == _id);
+        return _habitaciones.removeIf(h -> h.getId() == _id); //retorna true si hay una habitacion con el id fornecido
 
     }
 
