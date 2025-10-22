@@ -127,7 +127,11 @@ void main() {
 
                             Vivenda _selected = vivendas.get(id); //Selecionar la vivenda
 
-                            centralita.bajaVivenda(_selected); //Eliminar de la centralita
+                            if(centralita.bajaVivenda(_selected)){ //Eliminar de la centralita
+                                System.out.println("Vivenda eliminada.");
+                            }else {
+                                System.out.println("ID de Vivenda no encontrado.");
+                            }
                             break;
 
                         case 3: //LISTAR VIVENDA

@@ -16,7 +16,11 @@ public class Centralita {
         return true;
     }
     public boolean bajaVivenda(Vivenda _vivenda) {
-        _viviendas.remove(_vivenda.get_id()); //eliminar del hashmap la vivenda fornecida
+        try {
+            _viviendas.remove(_vivenda.get_id()); //eliminar del hashmap la vivenda fornecida
+        } catch (Exception e) {
+            return false;
+        }
         return true;
     }
     public HashMap<Integer, Vivenda> listarVivendas() {
@@ -36,6 +40,7 @@ public class Centralita {
         return this._viviendas.
                 get(idVivenda).
                 eliminarHabitacion(_idHabitacion);
+
     }
     public ArrayList<Sensor> listarSensores(int _idVivienda, int _idHabitacion) {
 
@@ -71,8 +76,7 @@ public class Centralita {
 
         if (habitacion == null) return false; //no hay una habitacion o vivenda con el id
 
-        habitacion.bajaSensor(_idSensor);
-        return true;
+        return habitacion.bajaSensor(_idSensor);
     }
 
 
