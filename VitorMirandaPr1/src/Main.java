@@ -2,16 +2,20 @@ import Sensores.Sensor;
 import Sensores.SensorMagnetico;
 import Sensores.SensorPresencia;
 import Sensores.SensorTemperatura;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
 
 public static Integer checkInteger(String text){ //Integer Control de errores
     Scanner scanner = new Scanner(System.in);
     int number = -1;
 
     try{ //INTENTADO CONVERTIR EL INPUT A ENTERO
-        System.out.println(text);
+        System.out.print(text);
         number = scanner.nextInt();
     } catch (InputMismatchException e) { //EL USUARIO HA PUESTO UN VALOR NO NUMÉRICO
-        System.out.println("Respuesta inválida!");
+        System.out.println("Respuesta inválida! Debe introducir un número entero.");
         System.out.println();
         scanner.nextLine();
     }
@@ -25,8 +29,8 @@ public static Integer showMenu(){
     System.out.println("1. Opciones de VIVENDAS");
     System.out.println("2. Opciones de HABITACION");
     System.out.println("3. Opciones de SENSORES");
-    System.out.println("3. Guardar archivos");
-    System.out.println("3. Cargar archivos");
+    System.out.println("4. Guardar archivos");
+    System.out.println("5. Cargar archivos");
     System.out.println("0. Salir");
     System.out.println();
 
@@ -79,11 +83,14 @@ void main() {
     Sensor sensor2 = new SensorMagnetico(0, "HC-SR04", "Kitronik", "Sensores.Sensor Ultrasónico", false);
     Sensor sensor3 = new SensorMagnetico(50, "DHT11", "Quine", "Sensores.Sensor Arduido", true);
 
-    //5. ANADINDO A LA CENTRALITA
+    //5. AÑADIENDO A LA CENTRALITA
     vivenda1.anadirHabitacion(habitacion1);
     centralita.altaVivenda(vivenda1);
-    centralita.anadirSensor(1, 1, sensor1);
-    centralita.anadirSensor(1, 1, sensor2);
+
+    //CAMBIO - USAR IDs GENERADOS EN LUGAR DE 1
+    centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor1);
+    centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor2);
+    centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor3);
 
     //6. INICIALIZACION DE COLLECIONES VACIAS
     HashMap<Integer, Vivenda> vivendas = new HashMap<>();
@@ -101,7 +108,7 @@ void main() {
                     option = showSubMenu("Vivendas");  //SubMenu Vivenda
 
                     switch(option){
-                        case 1: //ANADIR VIVENDA
+                        case 1: //ANADIR VIVIENDA
                             System.out.print("Nombre: "); //Input del NOMBRE
                             String nombre = scanner.next();
 
@@ -113,9 +120,9 @@ void main() {
 
                         case 2: //ELIMINAR VIVENDA
                             vivendas = centralita.listarVivendas();
-                            System.out.println(vivendas); //Exibiendo las vivenda para el usuario elegir el ID.
+                            System.out.println(vivendas); //Exibiendo las vivIendaS para el usuario elegir el ID.
 
-                            System.out.print("Introduzca el id de la vivenda a ser eliminada: "); //Input del id de la vivenda
+                            System.out.print("Introduzca el id de la vivienda a ser eliminada: "); //Input del id de la vivenda
                             int id = scanner.nextInt();
 
                             Vivenda _selected = vivendas.get(id); //Selecionar la vivenda
@@ -125,23 +132,35 @@ void main() {
 
                         case 3: //LISTAR VIVENDA
                             vivendas = centralita.listarVivendas();
+                            if(vivendas.isEmpty()){
+                                System.out.println("No hay vivendas registradas.");
+                            }
                             System.out.println(vivendas);
                             break;
                         case SALIR:
-                            option = -1;
+                            option = -1; //Vuelve al menú principal
                             break;
                         default:
-                            System.out.println("Opcion invalida");
+                            System.out.println("Opción inválida");
                     }
                 } while (option != -1);
                 break;
 
             case HABITACION:
                 vivendas = centralita.listarVivendas();
+                if (vivendas.isEmpty()){
+                    System.out.println("No hay vivendas registradas. Añada una vivienda primero.");
+                    break;
+                }
                 System.out.println(vivendas); //Exibiendo las vivenda para el usuario elegir el ID.
 
-                System.out.print("Introduzca el id de la vivenda: ");
-                int idVivenda = scanner.nextInt(); //para manipular la habitacion es necesario elegir una vivenda
+                //Para manipular la habitacion es necesario elegir una vivenda válida.
+                int idVivenda = checkInteger("Introduzca el id de la vivenda: ");
+
+                if (centralita.listarVivendas().get(idVivenda) == null) {
+                    System.out.println("ID de vivenda no válido.");
+                    break;
+                }
 
                 do {
                     option = showSubMenu("Habitaciones"); //SubMenu Habitacion
@@ -154,22 +173,32 @@ void main() {
 
                             Habitacion _habitacion = new Habitacion(nombre);
                             centralita.anadirHabitaciones(idVivenda, _habitacion);
+                            System.out.println("Habitación añadida con ID: " + _habitacion.getId());
                             break;
 
                         case 2: //ELIMINAR HABITACION
                             habitaciones = centralita.listarHabitaciones(idVivenda);
+                            if (habitaciones.isEmpty()){
+                                System.out.println("No hay habitaciones registradas en esta vivienda.");
+                            }
                             System.out.println(habitaciones);
 
-                            System.out.print("Introduzca el id de la habitacion a ser eliminada: ");
-                            int idHabitacion = scanner.nextInt();
+                            int idHabitacion = checkInteger("Introduzca el id de la habitacion a ser eliminada: ");
 
-                            centralita.eliminarHabitaciones(idVivenda, idHabitacion);
-
+                            if (centralita.eliminarHabitaciones(idVivenda, idHabitacion)){
+                                System.out.println("Habitación eliminada.");
+                            }else {
+                                System.out.println("ID de habitación no encontrado.");
+                            }
                             break;
 
                         case 3: //LISTAR HABITACION
                             habitaciones = centralita.listarHabitaciones(idVivenda);
-                            System.out.println(habitaciones);
+                            if (habitaciones.isEmpty()){
+                                System.out.println("No hay habitaciones en esta vivienda.");
+                            }else {
+                                System.out.println(habitaciones);
+                            }
                             break;
                         case SALIR:
                             option = -1;
@@ -183,23 +212,35 @@ void main() {
             case SENSORES:
                 //MOSTRANDO VIVENDAS
                 vivendas = centralita.listarVivendas();
+                if (vivendas.isEmpty()){
+                    System.out.println("No hay vivendas registradas. Añada una vivienda primero.");
+                    break;
+                }
                 System.out.println(vivendas);
 
-                System.out.print("Introduzca el id de la vivenda: ");
-                idVivenda = scanner.nextInt(); //para manipular los sensores es necesario elegir una vivenda.
+                //Para manipular los sensores es necesario elegir una vivenda.
+                idVivenda = checkInteger("Introduzca el id de la vivenda: ");
+                if (centralita.listarVivendas().get(idVivenda) == null) {
+                    System.out.println("ID de vivenda no válido.");
+                    break;
+                }
 
                 //MOSTRANDO HABITACIONES
                 habitaciones = centralita.listarHabitaciones(idVivenda);
+                if (habitaciones.isEmpty()){
+                    System.out.println("No hay habitaciones. Añada una habitación primero.");
+                    break;
+                }
                 System.out.println(habitaciones);
 
-                System.out.print("Introduzca el id de la habitacion: ");
-                int idHabitacion = scanner.nextInt(); //para manipular los sensores es necesario elegir una habitacion.
+                //Para manipular los sensores es necesario elegir una habitacion.
+                int idHabitacion = checkInteger("Introduzca el id de la habitacion: ");
 
                 do {
                     option = showSubMenu("Sensores"); //SubMenu Sensor
 
                     switch(option){
-                        case 1: // ANADIR SENSOR
+                        case 1: // AÑADIR SENSOR
                             Sensor sensor = new Sensor();
                             System.out.print("Nombre: ");
                             String nombre = scanner.next();
@@ -213,14 +254,24 @@ void main() {
                             System.out.print("Batería restante (%): ");
                             float bateria = scanner.nextFloat();
 
-                            //EXIBIENDO LOS TIPOS DE SENSORES PARA EL CLIENTE ELIGIR
-                            System.out.println("Cual es el tipo del Sensores.Sensor?");
-                            System.out.println("1. Sensores.Sensor de Presencia");
-                            System.out.println("2. Sensores.Sensor de Temperatura");
-                            System.out.println("3. Sensores.Sensor Magnetico");
-                            option = scanner.nextInt();
+                            /*
+                            Simple validación para float
 
-                            switch(option){
+                            float bateria = -1;
+                            while(bateria < 0 || bateria > 100) {
+                                bateria = checkInteger("Batería restante (0-100): ");
+                            }
+                            */
+
+                            //EXIBIENDO LOS TIPOS DE SENSORES PARA EL CLIENTE ELIGIR
+                            System.out.println("Cuál es el tipo del Sensor?");
+                            System.out.println("1. Sensor de Presencia");
+                            System.out.println("2. Sensor de Temperatura");
+                            System.out.println("3. Sensor Magnético");
+
+                            int tipoSensor = checkInteger("Elige el tipo: ");
+
+                            switch(tipoSensor){
                                 case 1: //1. POLIMORFISMO DEL SENSOR DE PRESENCIA
                                     System.out.print("¿Está activo? (true/false): ");
                                     boolean activoP = scanner.nextBoolean();
@@ -244,41 +295,74 @@ void main() {
                                     boolean activoM = scanner.nextBoolean();
                                     sensor = new SensorMagnetico(bateria, modelo, fabricante, nombre, activoM);
                                     break;
-                            }
 
-                            centralita.anadirSensor(idVivenda,idHabitacion, sensor);
-                            break;
+                                    default:
+                                        System.out.println("Tipo de sensor no válido.");
+                                        break;
+                                    }
+                                    if (sensor!=null){
+                                        centralita.anadirSensor(idVivenda,idHabitacion, sensor);
+                                        System.out.println("Sensor añadido con ID: " + sensor.get_id());
+                                    }
+                                    break;
 
                         case 2: //ELIMINAR SENSORES
                             sensores = centralita.listarSensores(idVivenda, idHabitacion);
+                            if (sensores.isEmpty()){
+                                System.out.println("No hay sensores en esta habitación.");
+                                break;
+                            }
                             System.out.println(sensores);
 
-                            System.out.print("Introduzca el id del sensor a ser eliminado: ");
-                            int idSensor = scanner.nextInt();
+                            int idSensor = checkInteger("Introduzca el id del sensor a ser eliminado: ");
 
-                            centralita.eliminarSensor(idVivenda, idHabitacion, idSensor);
+                            if (centralita.eliminarSensor(idVivenda, idHabitacion, idSensor)) {
+                                System.out.println("Sensor eliminado.");
+                            } else {
+                                System.out.println("ID de sensor no encontrado.");
+                            }
                             break;
+
 
                         case 3: //LISTAR SENSORES
                             sensores = centralita.listarSensores(idVivenda, idHabitacion);
-                            System.out.println(sensores);
+                            if (sensores.isEmpty()){
+                                System.out.println("No hay sensores en esta habitación.");
+                            }else{
+                                System.out.println(sensores);
+                            }
                             break;
                         case SALIR:
                             option = -1;
                             break;
 
                         default:
-                            System.out.println("Opcion invalida");
+                            System.out.println("Opción no válida");
                     }
                 } while (option != -1);
                 break;
+
+
+            case GUARDAR:
+                System.out.println("Guardando datos en el archivo...");
+                centralita.guardar();
+                break;
+
+            case CARGAR:
+                System.out.println("Cargando datos desde el archivo...");
+                centralita.cargarDatos();
+                System.out.println("Datos cargados. ");
+                break;
+
             case SALIR:
                 System.out.println("----------------------");
-                System.out.println("Creado por Vitor Miranda y Pedro henrique");
+                System.out.println("Creado por Vitor Miranda y Pedro Henrique");
                 System.out.println("----------------------");
                 break;
             default:
                 System.out.println("Opcion invalida");
         }
     } while (option != SALIR);
+
+    scanner.close(); //Cerrar el scaner principal
 }

@@ -1,11 +1,13 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Vivenda {
+public class Vivenda implements Serializable {
     private static int lastID = 0;
     private int _id;
     private String _nombre;
     private int _num_habitantes;
     private ArrayList<Habitacion> _habitaciones = new ArrayList<Habitacion>();
+
     public Vivenda(){}
     public Vivenda( String nombre, int num_habitantes) {
         lastID++;
@@ -13,7 +15,13 @@ public class Vivenda {
         this._nombre = nombre;
         this._num_habitantes = num_habitantes;
     }
+    public static int getLastID() {
+        return lastID;
+    }
 
+    public static void setLastID(int id) {
+        lastID = id;
+    }
 
     public int get_id() {
         return _id;

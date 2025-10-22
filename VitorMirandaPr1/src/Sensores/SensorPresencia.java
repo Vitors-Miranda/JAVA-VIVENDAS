@@ -1,6 +1,8 @@
 package Sensores;
 
-public class SensorPresencia extends Sensor {
+import java.io.Serializable;
+
+public class SensorPresencia extends Sensor implements Serializable {
     private boolean _estaActivo;
     private int _distanciaDeteccion;
 

@@ -1,6 +1,8 @@
 package Sensores;
 
-public class SensorTemperatura extends Sensor {
+import java.io.Serializable;
+
+public class SensorTemperatura extends Sensor implements Serializable {
     private Float _temperatura;
     private Float _temperaturaMaximaFabricante;
     private Float _temperaturaMinimaFabricante;

@@ -1,17 +1,18 @@
 import Sensores.Sensor;
-
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Centralita {
     private HashMap<Integer, Vivenda> _viviendas;
+    private static final String DATA_FILE = "data/centralita.ser"; //Ruta del archivo
 
     public Centralita() {
         _viviendas = new HashMap<>();
     }
 
     public boolean altaVivenda(Vivenda _vivenda) {
-        _viviendas.put(_vivenda.get_id(), _vivenda); //anadir una nueva vivena al hashmap
+        _viviendas.put(_vivenda.get_id(), _vivenda); //anadir una nueva vivienda al hashmap
         return true;
     }
     public boolean bajaVivenda(Vivenda _vivenda) {
@@ -74,11 +75,85 @@ public class Centralita {
         return true;
     }
 
+
+   //CARGAR DATOS
+    @SuppressWarnings("unchecked") // Suprime el warning del casting de HashMap
+
     public boolean cargarDatos(){
-        return true;
+        File dataFile = new File(DATA_FILE);
+        if (!dataFile.exists()) {
+            System.out.println("No se encontró el archivo " + DATA_FILE + ". Empezando sistema vacío.");
+            return false;
+        }
+
+        try (FileInputStream fis = new FileInputStream(DATA_FILE);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+            // 1. Cargar los contadores estáticos (en el mismo orden que se guardaron)
+            Vivenda.setLastID((Integer) ois.readObject());
+            Habitacion.setLastID((Integer) ois.readObject());
+            Sensor.setLastID((Integer) ois.readObject());
+
+            // 2. Cargar el HashMap principal
+            _viviendas = (HashMap<Integer, Vivenda>) ois.readObject();
+
+            System.out.println("Datos cargados correctamente desde " + DATA_FILE);
+            return true;
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar los datos: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
+    //GUARDAR DATOS
+
     public boolean guardar(){
-        return true;
+
+        // Asegurar que el directorio 'data' exista
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(DATA_FILE);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+            // 1. Guardar los contadores estáticos
+            oos.writeObject(Vivenda.getLastID());
+            oos.writeObject(Habitacion.getLastID());
+            oos.writeObject(Sensor.getLastID());
+
+            // 2. Guardar el HashMap principal
+            oos.writeObject(_viviendas);
+
+            System.out.println("Datos guardados correctamente en " + DATA_FILE);
+            return true;
+
+        } catch (IOException e) {
+            System.err.println("Error al guardar los datos: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

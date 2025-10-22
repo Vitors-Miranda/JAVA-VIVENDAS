@@ -1,8 +1,9 @@
 import Sensores.Sensor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Habitacion {
+public class Habitacion implements Serializable {
     private static int lastID = 0;
     private int _id;
     private String nombreEstancia;
@@ -14,7 +15,13 @@ public class Habitacion {
         this._id = lastID;
         this.nombreEstancia = nombreEstancia;
     }
+    public static int getLastID() {
+        return lastID;
+    }
 
+    public static void setLastID(int id) {
+        lastID = id;
+    }
     public int getId() {
         return _id;
     }

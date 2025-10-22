@@ -1,6 +1,8 @@
 package Sensores;
 
-public class Sensor {
+import java.io.Serializable;
+
+public class Sensor implements Serializable {
     private static int lastID = 0;
     private int _id;
     private String _nombre;
@@ -18,6 +20,13 @@ public class Sensor {
         this._fabricante = _fabricante;
         this._nombre = _nombre;
         this._id = lastID;
+    }
+
+    public static int getLastID() {
+        return lastID;
+    }
+    public static void setLastID(int id) {
+        lastID = id;
     }
     public int get_id() {
         return _id;

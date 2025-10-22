@@ -1,6 +1,8 @@
 package Sensores;
 
-public class SensorMagnetico extends Sensor {
+import java.io.Serializable;
+
+public class SensorMagnetico extends Sensor implements Serializable {
     boolean _estaActivo;
 
     public SensorMagnetico() {
