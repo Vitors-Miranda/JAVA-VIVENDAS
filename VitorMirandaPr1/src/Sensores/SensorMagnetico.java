@@ -1,5 +1,6 @@
 package Sensores;
 
+import exceptions.BateriaAgotadaException;
 import java.io.Serializable;
 
 public class SensorMagnetico extends Sensor implements Serializable {
@@ -13,17 +14,26 @@ public class SensorMagnetico extends Sensor implements Serializable {
         this._estaActivo = _estaActivo;
     }
 
-    public boolean is_estaActivo() {
+    public boolean is_estaActivo() throws BateriaAgotadaException {
+        checkBateria();
         return _estaActivo;
     }
 
-    public void set_estaActivo(boolean _estaActivo) {
+    public void set_estaActivo(boolean _estaActivo) throws BateriaAgotadaException {
+        checkBateria();
         this._estaActivo = _estaActivo;
     }
 
     @Override
     public String toString() {
-        return "\n" + super.toString() + "\nEstá Activo: '" + _estaActivo + '\'';
+        String baseStr = super.toString();
+
+        // Si la base ya indica batería agotada, no mostramos más datos
+        if (baseStr.contains("BATERÍA AGOTADA")) {
+            return baseStr;
+        }
+
+        return baseStr + "\nEstá Activo: '" + _estaActivo + '\'';
     }
 
 }

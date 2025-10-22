@@ -2,6 +2,8 @@ import Sensores.Sensor;
 import Sensores.SensorMagnetico;
 import Sensores.SensorPresencia;
 import Sensores.SensorTemperatura;
+import exceptions.BateriaAgotadaException;
+import exceptions.TemperaturaFueraRangoException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,6 @@ public static Integer checkInteger(String text){ //Integer Control de errores
 }
 
 public static Integer showMenu(){
-    Scanner scanner = new Scanner(System.in);
 
     System.out.println();
     System.out.println("1. Opciones de VIVENDAS");
@@ -38,7 +39,6 @@ public static Integer showMenu(){
 }
 
 public static Integer showSubMenu(String subMenu){
-    Scanner scanner = new Scanner(System.in);
 
     System.out.println();
     System.out.println("1. Anadir " + subMenu);
@@ -72,6 +72,7 @@ void main() {
     //1. CREANDO CENTRALITA
     Centralita centralita = new Centralita();
 
+
     //2. CREANDO VIVENDAS
     Vivenda vivenda1 = new Vivenda("vivenda1", 10);
 
@@ -87,7 +88,6 @@ void main() {
     vivenda1.anadirHabitacion(habitacion1);
     centralita.altaVivenda(vivenda1);
 
-    //CAMBIO - USAR IDs GENERADOS EN LUGAR DE 1
     centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor1);
     centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor2);
     centralita.anadirSensor(vivenda1.get_id(), habitacion1.getId(), sensor3);
@@ -120,7 +120,7 @@ void main() {
 
                         case 2: //ELIMINAR VIVENDA
                             vivendas = centralita.listarVivendas();
-                            System.out.println(vivendas); //Exibiendo las vivIendaS para el usuario elegir el ID.
+                            System.out.println(vivendas); //Exibiendo las vivIendas para el usuario elegir el ID.
 
                             System.out.print("Introduzca el id de la vivienda a ser eliminada: "); //Input del id de la vivenda
                             int id = scanner.nextInt();
@@ -241,72 +241,72 @@ void main() {
 
                     switch(option){
                         case 1: // AÑADIR SENSOR
-                            Sensor sensor = new Sensor();
-                            System.out.print("Nombre: ");
-                            String nombre = scanner.next();
+                            try {
+                                Sensor sensor = new Sensor();
+                                System.out.print("Nombre: ");
+                                String nombre = scanner.next();
 
-                            System.out.print("Fabricante: ");
-                            String fabricante = scanner.next();
+                                System.out.print("Fabricante: ");
+                                String fabricante = scanner.next();
 
-                            System.out.print("Modelo: ");
-                            String modelo = scanner.next();
+                                System.out.print("Modelo: ");
+                                String modelo = scanner.next();
 
-                            System.out.print("Batería restante (%): ");
-                            float bateria = scanner.nextFloat();
+                                float bateria = -1;
+                                while (bateria < 0 || bateria > 100) {
+                                    // Usamos checkInteger y luego casteamos a float
+                                    bateria = (float) checkInteger("Batería restante (0-100): ");
 
-                            /*
-                            Simple validación para float
+                                }
 
-                            float bateria = -1;
-                            while(bateria < 0 || bateria > 100) {
-                                bateria = checkInteger("Batería restante (0-100): ");
-                            }
-                            */
 
-                            //EXIBIENDO LOS TIPOS DE SENSORES PARA EL CLIENTE ELIGIR
-                            System.out.println("Cuál es el tipo del Sensor?");
-                            System.out.println("1. Sensor de Presencia");
-                            System.out.println("2. Sensor de Temperatura");
-                            System.out.println("3. Sensor Magnético");
+                                //EXIBIENDO LOS TIPOS DE SENSORES PARA EL CLIENTE ELEGIR
+                                System.out.println("Cuál es el tipo del Sensor?");
+                                System.out.println("1. Sensor de Presencia");
+                                System.out.println("2. Sensor de Temperatura");
+                                System.out.println("3. Sensor Magnético");
+                                int tipoSensor = checkInteger("Elige el tipo: ");
 
-                            int tipoSensor = checkInteger("Elige el tipo: ");
+                                switch (tipoSensor) {
+                                    case 1: //1. POLIMORFISMO DEL SENSOR DE PRESENCIA
+                                        System.out.print("¿Está activo? (true/false): ");
+                                        boolean activoP = scanner.nextBoolean();
+                                        System.out.print("Distancia de detección (0-5): ");
+                                        int distancia = scanner.nextInt();
+                                        sensor = new SensorPresencia(nombre, fabricante, modelo, bateria, activoP, distancia);
+                                        break;
 
-                            switch(tipoSensor){
-                                case 1: //1. POLIMORFISMO DEL SENSOR DE PRESENCIA
-                                    System.out.print("¿Está activo? (true/false): ");
-                                    boolean activoP = scanner.nextBoolean();
-                                    System.out.print("Distancia de detección (0-5): ");
-                                    int distancia = scanner.nextInt();
-                                    sensor = new SensorPresencia(nombre, fabricante, modelo, bateria, activoP, distancia);
-                                    break;
+                                    case 2://1. POLIMORFISMO DEL SENSOR DE TEMPERATURA
+                                        System.out.print("Temperatura actual: ");
+                                        float t = scanner.nextFloat();
+                                        System.out.print("Temp. máxima fabricante: ");
+                                        float tmaxF = scanner.nextFloat();
+                                        System.out.print("Temp. mínima fabricante: ");
+                                        float tminF = scanner.nextFloat();
+                                        sensor = new SensorTemperatura(modelo, fabricante, nombre, bateria, t, tmaxF, tminF);
+                                        break;
 
-                                case 2://1. POLIMORFISMO DEL SENSOR DE TEMPERATURA
-                                    System.out.print("Temperatura actual: ");
-                                    float t = scanner.nextFloat();
-                                    System.out.print("Temp. máxima fabricante: ");
-                                    float tmaxF = scanner.nextFloat();
-                                    System.out.print("Temp. mínima fabricante: ");
-                                    float tminF = scanner.nextFloat();
-                                    sensor = new SensorTemperatura(modelo, fabricante, nombre, bateria, t, tmaxF, tminF);
-                                    break;
-
-                                case 3://1. POLIMORFISMO DEL SENSOR MAGNETICO
-                                    System.out.print("¿Está activo? (true/false): ");
-                                    boolean activoM = scanner.nextBoolean();
-                                    sensor = new SensorMagnetico(bateria, modelo, fabricante, nombre, activoM);
-                                    break;
+                                    case 3://1. POLIMORFISMO DEL SENSOR MAGNETICO
+                                        System.out.print("¿Está activo? (true/false): ");
+                                        boolean activoM = scanner.nextBoolean();
+                                        sensor = new SensorMagnetico(bateria, modelo, fabricante, nombre, activoM);
+                                        break;
 
                                     default:
                                         System.out.println("Tipo de sensor no válido.");
                                         break;
-                                    }
-                                    if (sensor!=null){
-                                        centralita.anadirSensor(idVivenda,idHabitacion, sensor);
-                                        System.out.println("Sensor añadido con ID: " + sensor.get_id());
-                                    }
+                                }
+                                if (sensor != null) {
+                                    centralita.anadirSensor(idVivenda, idHabitacion, sensor);
+                                    System.out.println("Sensor añadido con ID: " + sensor.get_id());
+                                }
+                            }catch (Exception e) {
+                                System.err.println("\nHa ocurrido un error inesperado: " + e.getMessage());
+                            }
                                     break;
 
                         case 2: //ELIMINAR SENSORES
+                            //Como este bloque solo maneja IDs, no añado try-catch
                             sensores = centralita.listarSensores(idVivenda, idHabitacion);
                             if (sensores.isEmpty()){
                                 System.out.println("No hay sensores en esta habitación.");
@@ -329,7 +329,14 @@ void main() {
                             if (sensores.isEmpty()){
                                 System.out.println("No hay sensores en esta habitación.");
                             }else{
-                                System.out.println(sensores);
+
+                                //Iteramos y llamamos a toString() individualmente
+                                // Esto permite que el toString() de Sensor maneje la BateriaAgotadaException
+
+                                System.out.println("Sensores de la habitación ID "+idHabitacion+":");
+                                for (Sensor sensor : sensores) {
+                                    System.out.println(sensor.toString()); // toString() es capaz de manejar su propio error
+                                }
                             }
                             break;
                         case SALIR:
